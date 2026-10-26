@@ -1,0 +1,1 @@
+{"name":"current_document","description":"Return the document currently selected by REA's Hopper bridge.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"examples":[{}],"properties":{},"type":"object"}}

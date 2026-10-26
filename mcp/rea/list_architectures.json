@@ -1,0 +1,1 @@
+{"name":"list_architectures","description":"List thin or universal Mach-O slices with offsets, sizes, alignment, explicit coverage, and native-tool provenance.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"examples":[{}],"properties":{},"type":"object"}}

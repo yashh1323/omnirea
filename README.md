@@ -56,9 +56,33 @@ In comparative tests against monolithic MCP reverse engineering:
 
 ---
 
-## Quickstart
+## Quickstart: 1-Click AI Assistant Setup
 
-### 1. Install or Run Instantly via NPX
+Turn any AI coding assistant (**Google Antigravity**, **Claude Code**, **Cursor IDE**, or **Windsurf**) into a complete autonomous reverse-engineering power agent with one command:
+
+```bash
+# 1-Click: Auto-detects your AI environment and configures everything
+npx omnirea setup
+
+# Or target a specific AI assistant:
+npx omnirea setup antigravity   # Deploys 213 REA MCP tools & skills into ~/.gemini/
+npx omnirea setup cursor        # Deploys .cursorrules & .cursor/mcp.json into your project
+npx omnirea setup claude        # Deploys CLAUDE.md & configures Claude Desktop
+npx omnirea setup workspace     # Configures the current repository workspace
+```
+
+### What `omnirea setup` Installs Automatically:
+* **213 REA MCP Tools**: Installs full JSON schemas into your assistant's MCP directory so it can invoke Ghidra, IDA Pro, Frida, and AST parsers.
+* **Two-Tier Agent Skills**: Injects `omnirea`, `lean-recon`, and `deep-verify` directly into your agent's skills system.
+* **16 REAP Domain Playbooks**: Makes all domain templates (Android, iOS, Electron, Games, Firmware, Kernel) immediately callable by the agent.
+* **Agent Protocol Rules**: Automatically writes `.cursorrules` or `CLAUDE.md` to instruct the AI to triage with fast Tier-1 CLI tools first before escalating to heavy disassemblers.
+
+---
+
+## Standalone CLI Triage (For Developers)
+
+You can also use OmniREA directly from your terminal without any AI assistant:
+
 ```bash
 # Run instant file inspection and architecture detection
 npx omnirea scan ./target-binary.exe
@@ -66,15 +90,9 @@ npx omnirea scan ./target-binary.exe
 # Fast triage for endpoints, credentials, and API keys
 npx omnirea triage ./app.asar
 
-# Check local toolchain environment
+# Check local toolchain environment (compilers, disassemblers, MCP schemas)
 npx omnirea doctor
 ```
-
-### 2. Add to Your AI Coding Agent
-Copy the skills from `./skills/` into your agent workspace (Antigravity, Claude Code, Cursor, Codex):
-- `skills/omnirea/`: The master two-tier router.
-- `skills/lean-recon/`: Tier-1 fast CLI patterns.
-- `skills/deep-verify/`: Tier-2 formal verification and 11-signal parity loop.
 
 ---
 

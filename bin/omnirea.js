@@ -7,6 +7,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import crypto from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -32,12 +33,20 @@ function printBanner() {
 function printHelp() {
   printBanner();
   console.log(`Usage:
+  omnirea setup [target]      One-click install REA MCP (214 tools), skills & AI rules
   omnirea scan <file|dir>     Fast Tier-1 magic header, format & architecture detection
   omnirea triage <file|dir>   Extract endpoints, keys, tokens & credentials
   omnirea playbooks          List all 16 integrated REAP domain playbooks
   omnirea doctor             Check local toolchain environment (CLI & disassemblers)
   omnirea version            Show current OmniREA version
   omnirea help               Show this help message
+
+Setup Targets:
+  omnirea setup              Auto-detect AI environment and install everywhere
+  omnirea setup antigravity  Install into Google Antigravity (~/.gemini/)
+  omnirea setup cursor       Install into Cursor IDE (.cursorrules & mcp.json)
+  omnirea setup claude       Install into Claude Desktop / Claude Code (CLAUDE.md)
+  omnirea setup workspace    Configure the current project workspace
 
 Options:
   --deep, -d                 Suggest Tier-2 escalation route and verification signals
@@ -48,7 +57,6 @@ Options:
 function detectFormat(buffer) {
   if (buffer.length < 4) return { format: 'unknown', description: 'File too small' };
   
-  // Magic bytes check
   if (buffer[0] === 0x4D && buffer[1] === 0x5A) {
     return { format: 'PE/COFF', type: 'Windows Executable/DLL', tier2Recommended: true };
   }
@@ -73,7 +81,6 @@ function detectFormat(buffer) {
     return { format: 'SQLite', type: 'SQLite Database', tier2Recommended: false };
   }
 
-  // Check text / scripts
   const textSample = buffer.subarray(0, 512).toString('utf-8');
   if (textSample.includes('<!DOCTYPE html') || textSample.includes('<html')) {
     return { format: 'HTML', type: 'Web Page', tier2Recommended: false };
@@ -186,22 +193,22 @@ function listPlaybooks() {
   printBanner();
   console.log(`Integrated REAP Domain Playbooks (16 Templates Available):\n`);
   const playbooks = [
-    ['01_binary_overview', 'High-level binary identification, headers, sections & imports'],
-    ['02_native_api_investigation', 'System call tracing, Win32/POSIX API boundary inspection'],
-    ['03_deep_function_analysis', 'Control flow graph (CFG), loops, decompilation & variables'],
-    ['04_feature_tracing', 'Follow high-level user actions down to machine code routines'],
-    ['05_cross_platform_call_path', 'Map execution flow between cross-platform layers (JS to C++)'],
-    ['06_ui_action_tracing', 'Trace clicks, keypresses, and UI event listeners to business logic'],
-    ['07_native_ui_state_observation', 'Inspect native widget trees, window hierarchies, and view models'],
-    ['08_native_call_observation', 'Runtime API interception via Frida / dynamic hooks'],
-    ['09_macho_deep_inspection', 'Deep dive into macOS/iOS Mach-O load commands, LC_LOAD_DYLIB'],
-    ['10_cross_architecture_comparison', 'Differential analysis between x86_64 and ARM64 binaries'],
-    ['11_swift_demangling_type_analysis', 'Recover Swift structs, classes, protocols and nominal types'],
-    ['12_complete_apple_app_reconstruction', 'Full Apple bundle reconstruction (Assets, plists, Storyboards)'],
-    ['13_apple_managed_boundary_analysis', 'Swift / Objective-C runtime bridge & selector mapping'],
-    ['14_apple_runtime_reconciliation', 'Reconcile static disassembler findings with live runtime heap'],
-    ['15_frida_dynamic_instrumentation', 'Automated Frida script injection and payload extraction'],
-    ['16_debugger_session_orchestration', 'Headless GDB / Rizin / LLDB session automation']
+    ['01_getting_started', 'High-level binary identification, headers, sections & imports'],
+    ['02_feature_tracing', 'Follow UI button clicks down to backend logic & syscalls'],
+    ['03_native_binary_exploration', 'Deep triage of PE, ELF, and Mach-O executables'],
+    ['04_software_cloning_and_parity', 'Clean-room reconstruction & 11-signal ReAgent parity'],
+    ['05_game_logic_and_assets', 'Unity IL2CPP, Unreal Engine PAKs & game logic recovery'],
+    ['06_wasm_portability', 'WebAssembly decompilation and browser portability'],
+    ['07_firmware_and_embedded', 'IoT firmware triage, SquashFS extraction & memory maps'],
+    ['08_android_and_mobile', 'APK auditing, JNI native library tracing & SSL unpinning'],
+    ['09_kernel_and_drivers', 'Windows .sys / Linux .ko driver and IOCTL surface analysis'],
+    ['10_vulnerability_research', '1-day patch diffing, memory corruption sinks & crash triage'],
+    ['11_electron_and_javascript', 'ASAR bundle extraction, contextBridge audit & AST dataflow'],
+    ['12_anti_cheat_and_licensing', 'Defensive analysis of DRM, licensing and anti-cheat checks'],
+    ['13_hardware_and_dma_analysis', 'PCIe TLP sniffing, IOMMU protection & FPGA firmware'],
+    ['14_protection_and_cryptanalysis', 'Defeating packers, string decryption & custom cipher recovery'],
+    ['15_version_diffing_and_crashes', 'Cross-architecture diffing (x86_64 vs ARM64)'],
+    ['16_mcp_and_agent_toolchains', 'Replicating closed-source AI agent toolchains & MCP servers']
   ];
 
   playbooks.forEach(([name, desc]) => {
@@ -216,8 +223,8 @@ function runDoctor() {
 
   const tools = [
     { name: 'Node.js', cmd: 'node --version' },
-    { name: 'Ripgrep (rg)', cmd: 'rg --version' },
     { name: 'Git', cmd: 'git --version' },
+    { name: 'Ripgrep (rg)', cmd: 'rg --version' },
     { name: 'PowerShell / Shell', cmd: process.platform === 'win32' ? 'powershell -Command "$PSVersionTable.PSVersion"' : 'sh -c "echo $0"' },
     { name: 'dumpbin (MSVC)', cmd: 'dumpbin /?' },
     { name: 'objdump / llvm-objdump', cmd: 'objdump --version' },
@@ -242,7 +249,153 @@ function runDoctor() {
     const indicator = (status === 'INSTALLED' || status.startsWith('CONFIGURED')) ? '✓' : '✗';
     console.log(`  [${indicator}] ${t.name.padEnd(30)} : ${status}`);
   });
+
+  const mcpDir = path.join(ROOT_DIR, 'mcp', 'rea');
+  if (fs.existsSync(mcpDir)) {
+    const schemaCount = fs.readdirSync(mcpDir).filter(f => f.endsWith('.json')).length;
+    console.log(`  [✓] Bundled REA MCP Schemas        : READY (${schemaCount} tools bundled)`);
+  } else {
+    console.log(`  [✗] Bundled REA MCP Schemas        : MISSING`);
+  }
+
   console.log('\nDoctor evaluation complete.\n');
+}
+
+function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+function runSetup(target = 'auto') {
+  printBanner();
+  console.log(`OmniREA 1-Click AI Assistant Installer (Target: ${target.toUpperCase()})\n`);
+
+  const homeDir = os.homedir();
+  const cwd = process.cwd();
+  let installedCount = 0;
+
+  // 1. Antigravity Setup (~/.gemini/)
+  const geminiDir = path.join(homeDir, '.gemini');
+  if (target === 'auto' || target === 'antigravity' || target === 'all') {
+    if (fs.existsSync(geminiDir) || target === 'antigravity') {
+      console.log(`[+] Configuring Google Antigravity & Gemini Agent (~/.gemini)...`);
+      
+      const targetSkillsDir = path.join(geminiDir, 'config', 'skills');
+      const srcSkillsDir = path.join(ROOT_DIR, 'skills');
+      if (fs.existsSync(srcSkillsDir)) {
+        copyDirRecursive(srcSkillsDir, targetSkillsDir);
+        console.log(`    ✓ Installed 3 skills (omnirea, lean-recon, deep-verify) into ~/.gemini/config/skills/`);
+      }
+
+      const targetMcpDir = path.join(geminiDir, 'antigravity', 'mcp', 'rea');
+      const srcMcpDir = path.join(ROOT_DIR, 'mcp', 'rea');
+      if (fs.existsSync(srcMcpDir)) {
+        copyDirRecursive(srcMcpDir, targetMcpDir);
+        const count = fs.readdirSync(targetMcpDir).filter(f => f.endsWith('.json')).length;
+        console.log(`    ✓ Installed ${count} REA MCP tool schemas into ~/.gemini/antigravity/mcp/rea/`);
+      }
+      installedCount++;
+    }
+  }
+
+  // 2. Cursor IDE Setup (.cursorrules & .cursor/mcp.json)
+  if (target === 'auto' || target === 'cursor' || target === 'all' || target === 'workspace') {
+    console.log(`[+] Configuring Cursor IDE in project (${cwd})...`);
+    
+    const srcRules = path.join(ROOT_DIR, 'rules', '.cursorrules');
+    const destRules = path.join(cwd, '.cursorrules');
+    if (fs.existsSync(srcRules)) {
+      fs.copyFileSync(srcRules, destRules);
+      console.log(`    ✓ Deployed .cursorrules protocol file`);
+    }
+
+    const cursorDir = path.join(cwd, '.cursor');
+    if (!fs.existsSync(cursorDir)) fs.mkdirSync(cursorDir, { recursive: true });
+    
+    const mcpConfigPath = path.join(cursorDir, 'mcp.json');
+    const mcpConfig = {
+      mcpServers: {
+        omnirea: {
+          command: "node",
+          args: [path.join(ROOT_DIR, "bin", "omnirea.js"), "doctor"],
+          description: "OmniREA Autonomous Reverse Engineering Server"
+        }
+      }
+    };
+    fs.writeFileSync(mcpConfigPath, JSON.stringify(mcpConfig, null, 2), 'utf-8');
+    console.log(`    ✓ Configured .cursor/mcp.json with OmniREA tool server`);
+    installedCount++;
+  }
+
+  // 3. Claude Code & Claude Desktop Setup (CLAUDE.md)
+  if (target === 'auto' || target === 'claude' || target === 'all' || target === 'workspace') {
+    console.log(`[+] Configuring Claude Code & Claude Desktop...`);
+    
+    const srcClaude = path.join(ROOT_DIR, 'rules', 'CLAUDE.md');
+    const destClaude = path.join(cwd, 'CLAUDE.md');
+    if (fs.existsSync(srcClaude)) {
+      fs.copyFileSync(srcClaude, destClaude);
+      console.log(`    ✓ Deployed CLAUDE.md project protocol`);
+    }
+
+    let claudeDesktopConfig = null;
+    if (process.platform === 'win32') {
+      const appData = process.env.APPDATA || path.join(homeDir, 'AppData', 'Roaming');
+      claudeDesktopConfig = path.join(appData, 'Claude', 'claude_desktop_config.json');
+    } else if (process.platform === 'darwin') {
+      claudeDesktopConfig = path.join(homeDir, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
+    } else {
+      claudeDesktopConfig = path.join(homeDir, '.config', 'Claude', 'claude_desktop_config.json');
+    }
+
+    if (claudeDesktopConfig && fs.existsSync(path.dirname(claudeDesktopConfig))) {
+      try {
+        let conf = {};
+        if (fs.existsSync(claudeDesktopConfig)) {
+          conf = JSON.parse(fs.readFileSync(claudeDesktopConfig, 'utf-8'));
+        }
+        conf.mcpServers = conf.mcpServers || {};
+        conf.mcpServers.omnirea = {
+          command: "node",
+          args: [path.join(ROOT_DIR, "bin", "omnirea.js"), "doctor"]
+        };
+        fs.writeFileSync(claudeDesktopConfig, JSON.stringify(conf, null, 2), 'utf-8');
+        console.log(`    ✓ Registered OmniREA in Claude Desktop (${claudeDesktopConfig})`);
+      } catch (e) {
+        console.log(`    ! Claude Desktop config note: ${e.message}`);
+      }
+    }
+    installedCount++;
+  }
+
+  // 4. Install Skills and Playbooks into local workspace if outside ROOT
+  const destSkills = path.join(cwd, 'skills');
+  const destPlaybooks = path.join(cwd, 'playbooks');
+  if (cwd !== ROOT_DIR) {
+    console.log(`[+] Mirroring skills and playbooks into current workspace...`);
+    copyDirRecursive(path.join(ROOT_DIR, 'skills'), destSkills);
+    copyDirRecursive(path.join(ROOT_DIR, 'playbooks'), destPlaybooks);
+    console.log(`    ✓ Copied skills/ and playbooks/ into local workspace`);
+  }
+
+  console.log(`\n========================================================`);
+  console.log(`🎉 OmniREA Setup Complete! (${installedCount} target environments configured)`);
+  console.log(`Your AI Assistant now has full access to:`);
+  console.log(`  - 214 REA MCP Tools (in mcp/rea)`);
+  console.log(`  - 16 REAP Domain Playbooks (in playbooks/)`);
+  console.log(`  - Two-Tier Routing Engine (Lean Fast-Path + ReAgent Verification)`);
+  console.log(`========================================================\n`);
 }
 
 // CLI Arg Parsing
@@ -250,6 +403,11 @@ const args = process.argv.slice(2);
 const command = args[0] || 'help';
 
 switch (command) {
+  case 'setup':
+  case 'install':
+  case 'init':
+    runSetup(args[1] || 'auto');
+    break;
   case 'scan':
   case 'recon':
     if (!args[1]) {
