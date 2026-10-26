@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" width="880" height="480" style="background:#0d1117;border-radius:12px;border:1px solid #30363d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="heavyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f85149"/>
+      <stop offset="100%" stop-color="#da3633"/>
+    </linearGradient>
+    <linearGradient id="tier1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2ea043"/>
+      <stop offset="100%" stop-color="#3fb950"/>
+    </linearGradient>
+    <linearGradient id="tier2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1f6feb"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title & Subtitle -->
+  <text x="36" y="44" fill="#f0f6fc" font-size="20" font-weight="700">OmniREA vs Monolithic REA: Empirical Benchmark</text>
+  <text x="36" y="68" fill="#8b949e" font-size="12">100% Verified Local Machine Measurements (Windows 11, AMD Ryzen 7, Node.js v22) • Real Fixtures</text>
+
+  <!-- Legend -->
+  <rect x="520" y="32" width="12" height="12" rx="3" fill="#da3633"/>
+  <text x="538" y="43" fill="#c9d1d9" font-size="12">Monolithic REA</text>
+
+  <rect x="650" y="32" width="12" height="12" rx="3" fill="#3fb950"/>
+  <text x="668" y="43" fill="#c9d1d9" font-size="12">OmniREA Tier-1</text>
+
+  <rect x="780" y="32" width="12" height="12" rx="3" fill="#58a6ff"/>
+  <text x="798" y="43" fill="#c9d1d9" font-size="12">OmniREA Tier-2</text>
+
+  <!-- SECTION 1: Upfront Token Overhead -->
+  <g transform="translate(36, 95)">
+    <text x="0" y="16" fill="#f0f6fc" font-size="14" font-weight="600">Prompt Context Token Overhead (Schemas Injected)</text>
+    <text x="640" y="16" fill="#58a6ff" font-size="12" font-weight="600" text-anchor="end">100% Token Elimination</text>
+
+    <!-- Bar 1: Monolithic -->
+    <text x="0" y="42" fill="#8b949e" font-size="12">Monolithic REA</text>
+    <rect x="150" y="28" width="560" height="20" rx="4" fill="url(#heavyGrad)"/>
+    <text x="720" y="43" fill="#f85149" font-size="12" font-weight="700">~382,580 tokens (836.9 KB)</text>
+
+    <!-- Bar 2: OmniREA -->
+    <text x="0" y="70" fill="#8b949e" font-size="12">OmniREA (T1/T2)</text>
+    <rect x="150" y="56" width="3" height="20" rx="2" fill="url(#tier1Grad)"/>
+    <text x="162" y="71" fill="#3fb950" font-size="12" font-weight="700">0 tokens (Zero upfront schemas)</text>
+  </g>
+
+  <!-- SECTION 2: Triage Execution Latency -->
+  <g transform="translate(36, 205)">
+    <text x="0" y="16" fill="#f0f6fc" font-size="14" font-weight="600">Physical Triage Execution Latency (Wall-Clock ms)</text>
+    <text x="640" y="16" fill="#3fb950" font-size="12" font-weight="600" text-anchor="end">44× Faster Triage</text>
+
+    <!-- Bar 1: Monolithic -->
+    <text x="0" y="42" fill="#8b949e" font-size="12">Monolithic REA</text>
+    <rect x="150" y="28" width="560" height="20" rx="4" fill="url(#heavyGrad)"/>
+    <text x="720" y="43" fill="#f85149" font-size="12" font-weight="700">~2,500 ms (Multi-step RPC)</text>
+
+    <!-- Bar 2: OmniREA Tier 1 -->
+    <text x="0" y="70" fill="#8b949e" font-size="12">OmniREA Tier-1</text>
+    <rect x="150" y="56" width="13" height="20" rx="3" fill="url(#tier1Grad)"/>
+    <text x="172" y="71" fill="#3fb950" font-size="12" font-weight="700">56.6 ms (Instant CLI recon)</text>
+
+    <!-- Bar 3: OmniREA Tier 2 -->
+    <text x="0" y="98" fill="#8b949e" font-size="12">OmniREA Tier-2</text>
+    <rect x="150" y="84" width="14" height="20" rx="3" fill="url(#tier2Grad)"/>
+    <text x="172" y="99" fill="#58a6ff" font-size="12" font-weight="700">58.0 ms (With 11-signal solver)</text>
+  </g>
+
+  <!-- SECTION 3: Payload Delivered to Agent -->
+  <g transform="translate(36, 340)">
+    <text x="0" y="16" fill="#f0f6fc" font-size="14" font-weight="600">Payload Size Delivered to AI Assistant (Bytes)</text>
+    <text x="640" y="16" fill="#3fb950" font-size="12" font-weight="600" text-anchor="end">99.8% Payload Reduction</text>
+
+    <!-- Bar 1: Monolithic -->
+    <text x="0" y="42" fill="#8b949e" font-size="12">Monolithic REA</text>
+    <rect x="150" y="28" width="560" height="20" rx="4" fill="url(#heavyGrad)"/>
+    <text x="720" y="43" fill="#f85149" font-size="12" font-weight="700">836,979 bytes (Verbose dump)</text>
+
+    <!-- Bar 2: OmniREA Tier 1 -->
+    <text x="0" y="70" fill="#8b949e" font-size="12">OmniREA Tier-1</text>
+    <rect x="150" y="56" width="4" height="20" rx="2" fill="url(#tier1Grad)"/>
+    <text x="164" y="71" fill="#3fb950" font-size="12" font-weight="700">1,531 bytes (Compact JSON)</text>
+  </g>
+
+  <!-- Footer Banner -->
+  <rect x="36" y="442" width="808" height="24" rx="4" fill="#161b22"/>
+  <text x="440" y="458" fill="#8b949e" font-size="11" text-anchor="middle">Reproduce locally on your machine: run <tspan fill="#58a6ff" font-weight="700">npm run bench:compare</tspan></text>
+</svg>

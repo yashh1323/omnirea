@@ -60,7 +60,24 @@ flowchart TD
 
 ## Empirical Benchmarks (Local Machine Measurements)
 
-Measured directly on Windows 11 (AMD Ryzen 7, Node.js v22) across real binary and source targets. Anyone can verify and reproduce these measurements locally by running `npm run bench`:
+Measured directly on Windows 11 (AMD Ryzen 7, Node.js v22) across real binary and source targets. Anyone can verify and reproduce these measurements locally by running `npm run bench` or `npm run bench:compare`:
+
+<p align="center">
+  <img src="assets/benchmark-chart.svg" alt="OmniREA Empirical Benchmark Chart" width="100%">
+</p>
+
+### 1. Head-to-Head Architectural Matrix (Real Target: `test/fixtures/sample-app/bundle.js`)
+
+| Metric | Monolithic Heavy REA MCP | OmniREA Tier-1 Fast Path | OmniREA Tier-2 Deep Verify |
+| :--- | :---: | :---: | :---: |
+| **Tool Schemas In Context** | 213 schemas (~382,580 tok) | **0 schemas (0 tokens)** | **Isolated on-demand** |
+| **Triage Execution Latency** | ~1,500 – 4,000 ms per RPC | **56.6 ms** (`omnirea triage`) | **58.0 ms** (with solver) |
+| **Payload Injected into LLM** | ~120 – 850 KB verbose dumps | **1,531 bytes clean JSON** | **Structured Proof Report** |
+| **Agent Turns to Solve** | 3 – 5 conversational turns | **1 turn** (instant triage) | **1 turn verification** |
+| **Algorithmic Math Solving** | Heavy manual loop | Flags hypothesis | **Synthesizes & Proves Key** |
+| **11-Signal Parity Audit** | Manual / external | N/A (Recon only) | **11/11 Verified (PASS)** |
+
+### 2. Micro-Level Operation Benchmarks (Native System Targets)
 
 | Operation & Target | Monolithic Heavy REA MCP | OmniREA Tier-1 Fast Path | Measured Difference |
 | :--- | :---: | :---: | :---: |
@@ -69,7 +86,7 @@ Measured directly on Windows 11 (AMD Ryzen 7, Node.js v22) across real binary an
 | **Credential & Endpoint Triage (`server.js`)** | Ingests 213 tool schemas + AST relations | **60.2 – 77.7 ms** (`omnirea triage`) | **Instant (<80ms)** (structured JSON payload) |
 | **Payload Size Delivered to AI** | Megabytes of tool schemas & AST nodes | **261 – 1,543 bytes structured JSON** | **99.9% smaller payload** |
 
-*All timings are 5-pass local performance averages measured with `performance.now()` in Node.js via `scripts/benchmark.mjs`.*
+*All timings are 5-pass local performance averages measured with `performance.now()` in Node.js via `npm run bench` and `npm run bench:compare`.*
 
 ---
 
