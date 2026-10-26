@@ -1,0 +1,33 @@
+{
+  "name": "omnirea",
+  "version": "1.0.0",
+  "description": "Two-tier autonomous reverse engineering framework. Consolidates REA MCP tools, ReAgent CPU emulation parity, and Lean fast CLI recon for binaries, web, and apps.",
+  "main": "bin/omnirea.js",
+  "bin": {
+    "omnirea": "./bin/omnirea.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "node bin/omnirea.js doctor",
+    "doctor": "node bin/omnirea.js doctor"
+  },
+  "keywords": [
+    "reverse-engineering",
+    "agentic-ai",
+    "rea",
+    "reagent",
+    "leanrea",
+    "mcp",
+    "model-context-protocol",
+    "decompiler",
+    "ghidra",
+    "ida-pro",
+    "unicorn-engine",
+    "binary-analysis",
+    "static-analysis",
+    "security-tools",
+    "cli"
+  ],
+  "author": "OmniREA Contributors",
+  "license": "MIT"
+}

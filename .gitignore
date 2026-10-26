@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+temp/
+scratch/
+coverage/
+.env
+*.exe
+*.dll
+*.so
+*.dylib
+*.apk
+*.asar
