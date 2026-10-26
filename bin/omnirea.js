@@ -326,15 +326,15 @@ function runSetup(target = 'auto') {
     const mcpConfigPath = path.join(cursorDir, 'mcp.json');
     const mcpConfig = {
       mcpServers: {
-        omnirea: {
-          command: "node",
-          args: [path.join(ROOT_DIR, "bin", "omnirea.js"), "doctor"],
-          description: "OmniREA Autonomous Reverse Engineering Server"
+        rea: {
+          command: "npx",
+          args: ["-y", "@morluto/rea"],
+          description: "REA Reverse Engineering Anything MCP Server (214 Tools)"
         }
       }
     };
     fs.writeFileSync(mcpConfigPath, JSON.stringify(mcpConfig, null, 2), 'utf-8');
-    console.log(`    ✓ Configured .cursor/mcp.json with OmniREA tool server`);
+    console.log(`    ✓ Configured .cursor/mcp.json with REA live MCP server`);
     installedCount++;
   }
 
@@ -366,12 +366,12 @@ function runSetup(target = 'auto') {
           conf = JSON.parse(fs.readFileSync(claudeDesktopConfig, 'utf-8'));
         }
         conf.mcpServers = conf.mcpServers || {};
-        conf.mcpServers.omnirea = {
-          command: "node",
-          args: [path.join(ROOT_DIR, "bin", "omnirea.js"), "doctor"]
+        conf.mcpServers.rea = {
+          command: "npx",
+          args: ["-y", "@morluto/rea"]
         };
         fs.writeFileSync(claudeDesktopConfig, JSON.stringify(conf, null, 2), 'utf-8');
-        console.log(`    ✓ Registered OmniREA in Claude Desktop (${claudeDesktopConfig})`);
+        console.log(`    ✓ Registered live REA MCP server in Claude Desktop (${claudeDesktopConfig})`);
       } catch (e) {
         console.log(`    ! Claude Desktop config note: ${e.message}`);
       }
