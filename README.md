@@ -247,7 +247,7 @@ Every OmniREA report strictly separates findings into:
 
 ## Acknowledgments & Upstream Projects
 
-OmniREA is built upon the pioneering work of four open-source projects. All upstream licenses are respected under the MIT License:
+OmniREA is built upon the pioneering work of four open-source projects. For detailed attributions, see [ATTRIBUTIONS.md](ATTRIBUTIONS.md). All upstream licenses are respected under the MIT License:
 
 * **[morluto/rea](https://github.com/morluto/rea)** (MIT License): Created the original 207-tool Reverse Engineering Anything MCP server and evidence bundle architecture.
 * **[Dryxio/reagent](https://github.com/Dryxio/reagent)** (MIT License): Developed the 11-signal parity framework, formal C/C++ reconstruction loop, and Unicorn differential CPU emulation.
@@ -256,6 +256,12 @@ OmniREA is built upon the pioneering work of four open-source projects. All upst
 
 ---
 
+## Contributing
+
+Contributions, domain playbooks, and improvements are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before opening a pull request.
+
+---
+
 ## License
 
-OmniREA is open-source software licensed under the [MIT License](LICENSE).
+OmniREA is open-source software licensed under the [MIT License](LICENSE). See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for third-party acknowledgments.
