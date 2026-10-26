@@ -9,7 +9,8 @@
   "type": "module",
   "scripts": {
     "test": "node bin/omnirea.js doctor",
-    "doctor": "node bin/omnirea.js doctor"
+    "doctor": "node bin/omnirea.js doctor",
+    "bench": "node scripts/benchmark.mjs"
   },
   "keywords": [
     "reverse-engineering",

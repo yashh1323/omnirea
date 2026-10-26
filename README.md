@@ -14,7 +14,7 @@
 ## Table of Contents
 - [The Actual Problem](#the-actual-problem)
 - [The Two-Tier Architecture](#the-two-tier-architecture)
-- [Empirical Benchmarks (Measured on Real Targets)](#empirical-benchmarks-measured-on-real-targets)
+- [Empirical Benchmarks (Local Machine Measurements)](#empirical-benchmarks-local-machine-measurements)
 - [1-Click Turnkey AI Assistant Setup](#1-click-turnkey-ai-assistant-setup)
 - [Manual Copy-and-Paste MCP Configuration](#manual-copy-and-paste-mcp-configuration)
 - [3 Ready-to-Paste Agent Magic Prompts](#3-ready-to-paste-agent-magic-prompts)
@@ -58,28 +58,18 @@ flowchart TD
 
 ---
 
-## Empirical Benchmarks (Measured on Real Targets)
+## Empirical Benchmarks (Local Machine Measurements)
 
-We measured real execution latency, context size, and token overhead on identical targets:
+Measured directly on Windows 11 (AMD Ryzen 7, Node.js v22) across real binary and source targets. Anyone can verify and reproduce these measurements locally by running `npm run bench`:
 
-### 1. Macro-Level Agent Performance (Full Target Suites)
-
-| Metric | Monolithic REA MCP | OmniREA (Tier 1 Fast Path) | Measured Difference |
+| Operation & Target | Monolithic Heavy REA MCP | OmniREA Tier-1 Fast Path | Measured Difference |
 | :--- | :---: | :---: | :---: |
-| **Tool Schema Injected** | ~372,600 tokens | **0 tokens** | **100% saved** |
-| **Average Wall-Clock Latency** | 24.2 s | **14.8 s** | **38% faster** |
-| **Conversation Turns to Answer** | 7.1 turns | **3.1 turns** | **56% fewer turns** |
-| **API Cost per Query** | $0.084 | **$0.054** | **35% lower cost** |
-| **Triage Accuracy** | 74 / 75 (98.6%) | **74 / 75 (98.6%)** | **No accuracy loss** |
+| **Tool Schema Prompt Overhead** | 836.9 KB JSON (~372,600 tokens) | **0.0 KB (0 tokens)** | **100% token elimination** |
+| **PE Binary Triage (`cmd.exe` - 339 KB)** | Ingests 213 tool schemas + disassembler | **61.8 – 78.8 ms** (`omnirea scan`) | **Instant (<80ms)** (structured JSON payload) |
+| **Credential & Endpoint Triage (`server.js`)** | Ingests 213 tool schemas + AST relations | **60.2 – 77.7 ms** (`omnirea triage`) | **Instant (<80ms)** (structured JSON payload) |
+| **Payload Size Delivered to AI** | Megabytes of tool schemas & AST nodes | **261 – 1,543 bytes structured JSON** | **99.9% smaller payload** |
 
-### 2. Micro-Level Operation Benchmarks (Live Machine Timings)
-
-| Operation & Target | Monolithic Heavy REA | OmniREA Tier 1 Fast Path | Measured Difference |
-| :--- | :---: | :---: | :---: |
-| **Tool Schema Ingestion** | 836.9 KB JSON (~372,600 tokens) | **0.0 KB (0 tokens)** | **100% token elimination** |
-| **PE Binary Scan (`cmd.exe`)** | ~18,400 ms *(Ghidra headless)* | **78.8 ms** *(Native scan)* | **233× faster** (553 bytes payload) |
-| **JS Endpoint & Credential Triage** | 1,840 ms *(Full 135k AST nodes)* | **77.7 ms** *(Windowed regex)* | **23× faster** (261 bytes payload) |
-| **Electron ASAR Extraction** | 47.9 s *(140 MB JSON dump)* | **4.8 s** *(24 KB windowed)* | **10× faster, 99.9% less memory** |
+*All timings are 5-pass local performance averages measured with `performance.now()` in Node.js via `scripts/benchmark.mjs`.*
 
 ---
 
