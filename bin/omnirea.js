@@ -154,7 +154,7 @@ function triageFile(filePath, opts = {}) {
   const content = fs.readFileSync(filePath, 'utf-8');
   
   const urlRegex = /https?:\/\/[a-zA-Z0-9_\-.]+(:\d+)?(\/[a-zA-Z0-9_.\-~%!$&'()*+,;=:@/]*)/gi;
-  const keyRegex = /(api[_-]?key|secret|token|bearer|password|auth)['":\s=]+([a-zA-Z0-9_\-.]{8,64})/gi;
+  const keyRegex = /['"]?(?:api[_-]?key|secret[_-]?key|auth[_-]?token|bearer[_-]?token|access[_-]?token|private[_-]?key|password|secret|token|bearer|jwt)['"]?[\w\s]*[:= ]+['"]?([a-zA-Z0-9_\-.!@#$%^&*]{8,128})['"]?/gi;
   const ipRegex = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g;
 
   const urls = [...new Set(content.match(urlRegex) || [])];
