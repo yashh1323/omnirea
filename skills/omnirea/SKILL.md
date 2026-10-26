@@ -68,6 +68,19 @@ Escalate to **Tier 2** immediately if the user asks for:
 
 ---
 
+## Domain Reference Library (Progressive Disclosure)
+
+When investigating specific targets, read the corresponding deep reference guide in `./references/`:
+- **Android Applications**: [`./references/android-applications.md`](./references/android-applications.md) (APK layout, JNI, permissions, SSL bypass)
+- **JavaScript & Electron**: [`./references/javascript-applications.md`](./references/javascript-applications.md) (AST dataflow, sourcemaps, IPC contextBridge)
+- **Native Binaries (PE / ELF / Mach-O)**: [`./references/native-and-artifacts.md`](./references/native-and-artifacts.md) (Sections, symbols, imports/exports)
+- **Runtime Interception & Frida**: [`./references/runtime-observation.md`](./references/runtime-observation.md) (Dynamic hooking, API tracing)
+- **ReAgent Formal Verification**: [`./references/reagent-integration.md`](./references/reagent-integration.md) (11 signals, CPU differential emulation)
+- **MCP Toolchain Catalog**: [`./references/mcp-and-cli-toolchains.md`](./references/mcp-and-cli-toolchains.md) (213 REA tool catalog)
+- **Evidence Workflows**: [`./references/evidence-workflows.md`](./references/evidence-workflows.md) (Exporting/importing evidence bundles)
+
+---
+
 ## The Tri-Bucket Output Standard
 
 Every OmniREA report must structure findings into three distinct buckets:
