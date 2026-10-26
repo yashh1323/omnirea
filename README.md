@@ -172,6 +172,9 @@ npx omnirea scan ./target-binary.exe
 # Extract leaked API keys, tokens, endpoints, and IPs in <1s
 npx omnirea triage ./app.asar
 
+# Tier-2: 11-signal ReAgent formal parity audit & constraint solver
+npx omnirea verify ./bundle.js
+
 # Audit your machine for disassemblers, compilers, and toolchains
 npx omnirea doctor
 
