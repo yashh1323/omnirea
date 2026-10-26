@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node bin/omnirea.js doctor",
     "doctor": "node bin/omnirea.js doctor",
-    "bench": "node scripts/benchmark.mjs"
+    "bench": "node scripts/benchmark.mjs",
+    "bench:compare": "node scripts/compare-approaches.mjs"
   },
   "keywords": [
     "reverse-engineering",
